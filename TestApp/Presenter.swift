@@ -17,19 +17,16 @@ protocol PresenterProtocol: class {
 final class Presenter: PresenterProtocol {
     
     private var controller: AnimalCollectionVCProtocol
-    
     private var animalData = [Animal]() {
-        didSet {
-            controller.reloadCollectionView()
-        }
+        didSet { controller.reloadCollectionView() }
     }
     
     init(controller: AnimalCollectionVCProtocol) {
         self.controller = controller
-        setModel(data: getJSON())
+        setModelArrayFromData(getData())
     }
     
-    private func getJSON() -> [[String: AnyObject]] {
+    private func getData() -> [[String: AnyObject]] {
         if let path = Bundle.main.path(forResource: "data", ofType: "json") {
             do {
                 let data = try Data(contentsOf: URL(fileURLWithPath: path), options: .mappedIfSafe)
@@ -37,17 +34,17 @@ final class Presenter: PresenterProtocol {
                 
                 if let jsonResult = json as? Dictionary<String, AnyObject>, let data = jsonResult["data"] as? [[String: AnyObject]] {
                     return data
-
                 }
+                
             } catch let error {
-                controller.showAlert(title: "", msg: "Error")
+                controller.alertShow(title: "😓", msg: "Error")
                 print(error)
             }
         }
         return [[:]]
     }
     
-    private func setModel(data:[[String: AnyObject]]) {
+    private func setModelArrayFromData(_ data:[[String: AnyObject]]) {
         
         for animal in data {
             guard let name = animal["name"] as? String else { return }
@@ -59,12 +56,19 @@ final class Presenter: PresenterProtocol {
             
             let stats = Stats(max_weight: max_weight, length: length)
             let animal = Animal(name: name, thumbnail: thumbnail, region: region, stats: stats)
+            
             self.animalData.append(animal)
         }
     }
     
     func configurateCell(_ cell: AnimalCell, byItem: Int) {
+
+        cell.startSpiner()
         cell.setName = animalData[byItem].name
+        cell.setRegion = animalData[byItem].region
+        cell.setLenght = animalData[byItem].stats.length
+        cell.setWeight = animalData[byItem].stats.max_weight
+        cell.setProfileImage = animalData[byItem].thumbnail
     }
     
     func getNumberOfItemsInSection() -> Int {
