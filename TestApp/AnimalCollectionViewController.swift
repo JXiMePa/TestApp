@@ -17,7 +17,6 @@ private let reuseIdentifier = "Cell"
 
 class AnimalCollectionViewController: UICollectionViewController {
     
-    
     private var presenter: PresenterProtocol!
     
 //MARK: Life Cycle
@@ -25,7 +24,7 @@ class AnimalCollectionViewController: UICollectionViewController {
         super.viewDidLoad()
         
         if !Reachability.isConnectedToNetwork() {
-            self.alertShow(title: "Internet 😓", msg: "Connection not Available!")
+            self.alertShow(title: "Internet? 😓", msg: "Connection not Available!")
         }
         
         self.presenter = Presenter(controller: self)
