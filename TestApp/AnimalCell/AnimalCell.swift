@@ -26,6 +26,12 @@ final class AnimalCell: UICollectionViewCell {
     @IBOutlet private weak var weightLabel: UILabel!
     @IBOutlet private weak var lenghtLabel: UILabel!
     @IBOutlet private weak var spiner: UIActivityIndicatorView!
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        profileImage.layer.cornerRadius = 15
+        profileImage.clipsToBounds = true
+    }
 }
 
 extension AnimalCell: CustomCellProtocol {
